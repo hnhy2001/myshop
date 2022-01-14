@@ -7,7 +7,6 @@ class User(AbstractUser):
     role =  models.CharField(max_length=50)
     cart = models.ManyToManyField('Product', blank=True, null=True)
 
-
 class Product(models.Model):
     product_name = models.CharField(max_length=250, null=False, unique=True)
     avatar = models.ImageField(upload_to='img/%Y/%m')
