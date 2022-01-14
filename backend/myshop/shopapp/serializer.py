@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import User, Product
+from .models import User, Product, Notication
 
 class ProductSerializer(ModelSerializer):
     class Meta:
@@ -17,4 +17,9 @@ class UserSerializer(ModelSerializer):
         user.role = "user"
         user.save()
         return user
+
+class NoticationSerializer(ModelSerializer):
+    class Meta:
+        model = Notication
+        fields = ["user", "created_date", "updated_date", "casee"]
 

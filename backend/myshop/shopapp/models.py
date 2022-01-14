@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     phone = models.CharField(max_length=11)
     role =  models.CharField(max_length=50)
-    cart = models.ManyToManyField('Product', blank=True, null=True)
+    cart = models.ManyToManyField('Product', blank=False, null=False, related_name='product_ratings')
 
 class Product(models.Model):
     product_name = models.CharField(max_length=250, null=False, unique=True)
@@ -17,7 +17,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     order_price = models.FloatField(null=False)
-    product_id = models.ManyToManyField(Product, null=True, blank=True)
+    product_id = models.ManyToManyField(Product, null=False, blank=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Notication(models.Model):
@@ -26,6 +26,8 @@ class Notication(models.Model):
     status = models.BooleanField(default=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateField(auto_now_add=True)
+    updated_date = models.DateField(auto_now=True)
+    casee = models.CharField(max_length=50,default="null")
 
 
 

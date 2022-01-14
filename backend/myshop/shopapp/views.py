@@ -1,13 +1,19 @@
 from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponse, JsonResponse
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions, status, generics
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.utils import json
 
-from .models import Product, User
-from .serializer import ProductSerializer, UserSerializer
+from .models import Product, User, Notication
+from .serializer import ProductSerializer, UserSerializer, NoticationSerializer
+
+class NoticationView(viewsets.ModelViewSet):
+    queryset = Notication.objects.all()
+    serializer_class = NoticationSerializer
+
+
 
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.filter(active = True)
@@ -43,12 +49,12 @@ class UserView(viewsets.ModelViewSet):
         return Response(UserSerializer(user, many=True).data,
                         status=status.HTTP_200_OK)
 
-    @action(methods=['post'],detail=False, url_path="cart")
+    @action(methods=['post'],detail=False)
     def cart(self, request):
-        id = request.META["HTTP_ID"]
-        user = User.objects.filter(id = int(id), is_active = True)
-        product = Product.objects.filter(pk = request.data["product_id"])
+        id = int(request.META["HTTP_ID"])
+        product = Product.objects.get(id = request.data["product_id"])
+        user = User.objects.get(id = int(id), is_active = True)
         user.cart.add(product)
         user.save()
-        return Response(UserSerializer(user, many=True).data,
+        return Response(UserSerializer(user).data,
                         status=status.HTTP_200_OK)
